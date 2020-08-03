@@ -1,8 +1,6 @@
 package com.mpigot.mvvm_skeleton.ui.base
 
 import android.content.Context
-import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
@@ -10,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.ViewModelProviders
 import com.mpigot.mvvm_skeleton.R
 import com.mpigot.mvvm_skeleton.ui.login.LoginFragment
 import com.mpigot.mvvm_skeleton.utils.NetworkUtils

@@ -9,6 +9,8 @@ import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
+import java.lang.reflect.ParameterizedType
 
 
 abstract class BaseFragment<T : ViewDataBinding, V : BaseViewModel> : Fragment() {
@@ -16,8 +18,9 @@ abstract class BaseFragment<T : ViewDataBinding, V : BaseViewModel> : Fragment()
     private var activity : BaseActivity<*, *>? = null
     private lateinit var rootView : View
 
-    private lateinit var binding : T
-    protected lateinit var viewModel : V
+    abstract var binding : T
+    abstract var viewModel : V
+
 
     /**
      * Override for set binding variable
@@ -76,8 +79,10 @@ abstract class BaseFragment<T : ViewDataBinding, V : BaseViewModel> : Fragment()
 
     abstract fun setUpUi()
     abstract fun setUpObserver()
-    abstract fun setUpViewModel()
-    fun setUpBinding() {
+    private fun setUpViewModel() {
+        viewModel = ViewModelProviders.of(this).get(BaseViewModel::class.java)
+    }
+    private fun setUpBinding() {
         binding.setVariable(getBindingVariable(), viewModel)
         binding.lifecycleOwner = this
         binding.executePendingBindings()

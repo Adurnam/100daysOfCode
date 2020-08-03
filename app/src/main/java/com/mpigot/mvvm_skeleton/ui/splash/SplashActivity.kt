@@ -1,15 +1,16 @@
-package com.mpigot.mvvm_skeleton
+package com.mpigot.mvvm_skeleton.ui.splash
 
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.mpigot.mvvm_skeleton.R
 import com.mpigot.mvvm_skeleton.databinding.ActivitySplashBinding
 import com.mpigot.mvvm_skeleton.ui.base.BaseActivity
 import com.mpigot.mvvm_skeleton.ui.login.LoginFragment
 
 
-class SplashActivity : BaseActivity() {
+class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +28,9 @@ class SplashActivity : BaseActivity() {
 
     private fun setupBinding() {
         val binding =
-            DataBindingUtil.setContentView<ActivitySplashBinding>(this, R.layout.activity_splash)
+            DataBindingUtil.setContentView<ActivitySplashBinding>(this,
+                R.layout.activity_splash
+            )
     }
 
     override fun onFragmentAttached() {

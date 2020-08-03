@@ -1,13 +1,13 @@
 package com.mpigot.mvvm_skeleton.ui.login
 
-import androidx.databinding.library.baseAdapters.BR
 import com.mpigot.mvvm_skeleton.R
 import com.mpigot.mvvm_skeleton.databinding.FragmentLoginBinding
 import com.mpigot.mvvm_skeleton.ui.base.BaseFragment
 
-class LoginFragment : BaseFragment<FragmentLoginBinding, LoginViewModel>() {
+class LoginFragment() : BaseFragment<FragmentLoginBinding, LoginViewModel>() {
 
-    private lateinit var binding : FragmentLoginBinding
+    override lateinit var binding : FragmentLoginBinding
+    override lateinit var viewModel: LoginViewModel
 
     override fun getBindingVariable(): Int {
         return 0
@@ -22,10 +22,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, LoginViewModel>() {
     }
 
     override fun setUpObserver() {
-
-    }
-
-    override fun setUpViewModel() {
 
     }
 }
