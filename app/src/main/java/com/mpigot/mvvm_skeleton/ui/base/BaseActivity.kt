@@ -5,39 +5,26 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.ViewModelProviders
 import com.mpigot.mvvm_skeleton.R
-import com.mpigot.mvvm_skeleton.databinding.ActivityBaseBinding
 import com.mpigot.mvvm_skeleton.ui.login.LoginFragment
 import com.mpigot.mvvm_skeleton.utils.NetworkUtils
 
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity<T : ViewDataBinding, V : BaseViewModel> : AppCompatActivity(), BaseFragment.CallBack {
 
-    private lateinit var binding : ActivityBaseBinding
+    private lateinit var viewModel : V
+    private lateinit var binding : T
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-        setupBinding()
-        setContentView(binding.root)
-    }
+    private lateinit var progressDialog : ProgressBar
 
-//    fun setupViewModel() {
-//        viewModel = ViewModelProviders.of(this).get(BaseViewModel::class.java)
-//    }
+    abstract override fun onFragmentAttached()
 
-    private fun setupBinding() {
-        binding = ActivityBaseBinding.inflate(layoutInflater)
-    }
-
-    fun onFragmentAttached() {
-
-    }
-
-    fun onFragmentDetached(tag : String) {
-
-    }
+    abstract override fun onFragmentDetached(tag : String)
 
     fun hideKeyboard() {
         val view : View? = this.currentFocus
@@ -49,7 +36,7 @@ abstract class BaseActivity : AppCompatActivity() {
         return NetworkUtils.isNetworkConnected(applicationContext)
     }
 
-    fun openNewFragment(fragment : BaseFragment) {
+    fun openNewFragment(fragment : BaseFragment<*,*>) {
         val manager : FragmentManager = supportFragmentManager
         val transaction : FragmentTransaction = manager.beginTransaction()
         transaction.replace(R.id.fragment_container, fragment)

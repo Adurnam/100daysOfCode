@@ -11,11 +11,13 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 
 
-abstract class BaseFragment : Fragment() {
+abstract class BaseFragment<T : ViewDataBinding, V : BaseViewModel> : Fragment() {
 
-    private var activity : BaseActivity? = null
-    private var binding : Any? = null
+    private var activity : BaseActivity<*, *>? = null
     private lateinit var rootView : View
+
+    private lateinit var binding : T
+    protected lateinit var viewModel : V
 
     /**
      * Override for set binding variable
@@ -29,6 +31,8 @@ abstract class BaseFragment : Fragment() {
      */
     @LayoutRes
     abstract fun getLayoutId(): Int
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,11 +49,16 @@ abstract class BaseFragment : Fragment() {
         return rootView
     }
 
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        if (context is BaseActivity) {
-            this.activity = context
-            activity?.onFragmentAttached()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setUp()
+    }
+
+    override fun onAttach(activity: Context?) {
+        super.onAttach(activity)
+        if (activity is BaseActivity<*, *>) {
+            this.activity = activity
+            this.activity?.onFragmentAttached()
         }
     }
 
@@ -58,31 +67,40 @@ abstract class BaseFragment : Fragment() {
         super.onDetach()
     }
 
-    fun setUp() {
-        setUpUi()
-        setUpObserver()
+    private fun setUp() {
         setUpViewModel()
+        setUpObserver()
+        setUpBinding()
+        setUpUi()
     }
 
     abstract fun setUpUi()
     abstract fun setUpObserver()
     abstract fun setUpViewModel()
+    fun setUpBinding() {
+        binding.setVariable(getBindingVariable(), viewModel)
+        binding.lifecycleOwner = this
+        binding.executePendingBindings()
+    }
 
-    fun getBaseActivity() : BaseActivity? {
+    fun getBaseActivity() : BaseActivity<*, *>? {
         return activity
     }
 
-    fun getViewDataBinding() : Any? {
+    fun getViewDataBinding() : T {
         return binding
     }
 
     fun hideKeyboard() {
-        if (activity != null) {
             activity?.hideKeyboard()
-        }
     }
 
     fun isNetworkConnected() : Boolean {
-        return (activity != null && activity!!.isNetworkConnected())
+        return (activity != null && activity?.isNetworkConnected() ?: false)
+    }
+
+    interface CallBack {
+        fun onFragmentAttached()
+        fun onFragmentDetached(tag : String)
     }
 }
