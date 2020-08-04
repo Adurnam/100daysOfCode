@@ -2,6 +2,7 @@ package com.mpigot.mvvm_skeleton.ui.base
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,6 +56,7 @@ abstract class BaseFragment<T : ViewDataBinding, V : BaseViewModel> : Fragment()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUp()
+        Log.e("BaseFragment", viewModel.toString())
     }
 
     override fun onAttach(activity: Context?) {
@@ -80,8 +82,11 @@ abstract class BaseFragment<T : ViewDataBinding, V : BaseViewModel> : Fragment()
     abstract fun setUpUi()
     abstract fun setUpObserver()
     private fun setUpViewModel() {
-        viewModel = ViewModelProviders.of(this).get(BaseViewModel::class.java)
+        val type = (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[1]
+        @Suppress("UNCHECKED_CAST")
+        viewModel = ViewModelProviders.of(this).get(type as Class<V>)
     }
+
     private fun setUpBinding() {
         binding.setVariable(getBindingVariable(), viewModel)
         binding.lifecycleOwner = this
